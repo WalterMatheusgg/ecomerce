@@ -1,8 +1,10 @@
 import { beforeAll, afterAll } from 'vitest';
-import { env } from '../src/config/env.js';
+import dotenv from 'dotenv';
+import path from 'node:path';
 
+// Ensure test env is set before any app imports/config loads
 process.env.NODE_ENV = 'test';
-process.env.DATABASE_URL = env.databaseUrl || process.env.DATABASE_URL;
+dotenv.config({ path: path.resolve(__dirname, '..', '.env.test') });
 
 beforeAll(() => {
   if (!process.env.DATABASE_URL?.includes('_test') && !process.env.DATABASE_URL?.includes(':5433')) {

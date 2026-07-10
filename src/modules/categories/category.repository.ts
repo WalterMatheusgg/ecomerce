@@ -37,25 +37,16 @@ export class CategoryRepository {
     return this.prisma.category.update({ where: { id }, data });
   }
 
-  async softDelete(id: string, deletedAt: Date) {
-    return this.prisma.category.update({
-      where: { id },
-      data: { deletedAt },
-    });
-  }
+  async deleteWithProductCheck(id: string) {
+    return this.prisma.$transaction(async (tx) => {
+      const count = await tx.product.count({ where: { categoryId: id, deletedAt: null } });
 
-  async hasActiveProducts(id: string) {
-    const count = await this.prisma.product.count({
-      where: { categoryId: id, deletedAt: null },
-    });
+      if (count > 0) {
+        return { deleted: false };
+      }
 
-    return count > 0;
-  }
-
-  async findByIdWithProducts(id: string) {
-    return this.prisma.category.findFirst({
-      where: { id, deletedAt: null },
-      include: { products: { where: { deletedAt: null } } },
+      await tx.category.update({ where: { id }, data: { deletedAt: new Date() } });
+      return { deleted: true };
     });
   }
 }

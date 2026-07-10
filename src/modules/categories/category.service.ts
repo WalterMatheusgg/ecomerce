@@ -1,5 +1,5 @@
 import { AppError } from '../../errors/AppError.js';
-import { prisma } from '../../database/prisma.js';
+import { Prisma } from '@prisma/client';
 import { CategoryRepository } from './category.repository.js';
 
 export class CategoryService {
@@ -11,7 +11,15 @@ export class CategoryService {
       throw new AppError('Category already exists', 409);
     }
 
-    return this.categoryRepository.create({ name });
+    try {
+      return await this.categoryRepository.create({ name });
+    } catch (err: unknown) {
+      if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2002') {
+        throw new AppError('Category already exists', 409);
+      }
+
+      throw err;
+    }
   }
 
   async listCategories(page: number, limit: number) {
@@ -49,21 +57,11 @@ export class CategoryService {
       throw new AppError('Category not found', 404);
     }
 
-    return prisma.$transaction(async (tx) => {
-      const hasActiveProducts = await tx.product.count({
-        where: { categoryId: id, deletedAt: null },
-      });
+    const result = await this.categoryRepository.deleteWithProductCheck(id);
+    if (!result || result.deleted === false) {
+      throw new AppError('Cannot delete category with active products', 409);
+    }
 
-      if (hasActiveProducts > 0) {
-        throw new AppError('Cannot delete category with active products', 409);
-      }
-
-      await tx.category.update({
-        where: { id },
-        data: { deletedAt: new Date() },
-      });
-
-      return null;
-    });
+    return null;
   }
 }

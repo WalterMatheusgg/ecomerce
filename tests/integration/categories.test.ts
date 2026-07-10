@@ -27,6 +27,18 @@ describe('Categories integration', () => {
     expect(response.status).toBe(409);
   });
 
+  it('returns 409 when creating a category with name of a soft-deleted category', async () => {
+    const res1 = await request(app).post('/categories').send({ name: 'Duplicada' });
+    expect(res1.status).toBe(201);
+
+    const id = res1.body.data.id;
+    const del = await request(app).delete(`/categories/${id}`);
+    expect(del.status).toBe(204);
+
+    const res2 = await request(app).post('/categories').send({ name: 'Duplicada' });
+    expect(res2.status).toBe(409);
+  });
+
   it('lists categories with pagination', async () => {
     await prisma.category.createMany({ data: [{ name: 'A' }, { name: 'B' }] });
     const response = await request(app).get('/categories?page=1&limit=1');
