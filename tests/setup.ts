@@ -16,5 +16,6 @@ beforeAll(() => {
 });
 
 afterAll(async () => {
-  // no-op
+  const { prisma } = await import('../src/database/prisma.js');
+  await prisma.$disconnect();
 });

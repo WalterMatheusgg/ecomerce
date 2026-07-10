@@ -61,11 +61,12 @@ As migrations já estão versionadas em `prisma/migrations/` — não é preciso
 
 Testes de integração rodam contra um **Postgres real**, isolado do banco de desenvolvimento (porta `5433`, banco `ecommerce_test`).
 
-
+```bash
 cp .env.test.example .env.test
 docker compose up -d db-test  # ou crie o banco manualmente se estiver sem Docker
 npx dotenv -e .env.test -- npx prisma migrate deploy
 npm run test:integration
+```
 
 
 > O código de teste recusa rodar se a `DATABASE_URL` não apontar para um banco de teste — proteção contra apagar dados de desenvolvimento por engano.
