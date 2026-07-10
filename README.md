@@ -20,9 +20,10 @@ Node.js 18+ · TypeScript · Express · Prisma ORM · PostgreSQL · Zod · Vites
 
 ### Opção A — Docker (recomendado)
 
-
+```bash
 cp .env.example .env
 docker compose up --build
+```
 
 Esse comando sobe o Postgres de desenvolvimento, o Postgres de teste, aplica as migrations e inicia a API — tudo em um passo.
 
@@ -35,13 +36,14 @@ Para parar: `docker compose down` (adicione `-v` para também apagar os dados).
 
 Pré-requisito: PostgreSQL rodando na máquina.
 
-
+```bash
 npm install
 cp .env.example .env          # ajuste a DATABASE_URL se necessário
 createdb ecommerce            # se o banco ainda não existir
 npx prisma generate
 npx prisma migrate dev
 npm run dev
+```
 
 
 ---
@@ -78,11 +80,14 @@ npm run test:integration
 
 ## Exemplos
 
-
+```bash
 curl -X POST http://localhost:3000/categories -H 'Content-Type: application/json' -d '{"name":"Electronics"}'
+```
 
+```bash
 curl -X POST http://localhost:3000/products -H 'Content-Type: application/json' \
   -d '{"name":"Laptop","price":999.99,"stock":10,"categoryId":"<category-id>"}'
+```
 
 ## Comandos úteis
 

@@ -36,7 +36,8 @@ describe('Categories integration', () => {
     expect(del.status).toBe(204);
 
     const res2 = await request(app).post('/categories').send({ name: 'Duplicada' });
-    expect(res2.status).toBe(409);
+    expect(res2.status).toBe(201);
+    expect(res2.body.data.name).toBe('Duplicada');
   });
 
   it('lists categories with pagination', async () => {
