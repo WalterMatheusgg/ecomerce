@@ -84,6 +84,43 @@ curl -X POST http://localhost:3000/categories -H 'Content-Type: application/json
 curl -X POST http://localhost:3000/products -H 'Content-Type: application/json' \
   -d '{"name":"Laptop","price":999.99,"stock":10,"categoryId":"<category-id>"}'
 
+## Comandos úteis
+
+Instalar dependências e gerar cliente Prisma:
+
+```bash
+npm install
+npx prisma generate
+```
+
+Rodar a aplicação localmente (assumindo `DATABASE_URL` configurada em `.env`):
+
+```bash
+cp .env.example .env
+npx prisma migrate dev --name init
+npm run dev
+```
+
+Rodar a stack completa com Docker (aplica migrations automaticamente):
+
+```bash
+docker compose up --build
+```
+
+Preparar banco de teste e aplicar migrations (usa `.env.test`):
+
+```bash
+cp .env.test.example .env.test
+dotenv -e .env.test -- npx prisma migrate deploy
+```
+
+Executar testes de integração contra o banco de teste:
+
+```bash
+dotenv -e .env.test -- npm run test:integration
+```
+
+Observação: os scripts acima usam `dotenv-cli` para carregar `.env.test`; instale com `npm i -D dotenv-cli` se necessário.
 
 ## Observações
 - O `.env` real nunca é commitado — só `.env.example` e `.env.test.example`.

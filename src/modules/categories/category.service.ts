@@ -48,7 +48,15 @@ export class CategoryService {
       }
     }
 
-    return this.categoryRepository.update(id, data);
+    try {
+      return await this.categoryRepository.update(id, data);
+    } catch (err: unknown) {
+      if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2002') {
+        throw new AppError('Category already exists', 409);
+      }
+
+      throw err;
+    }
   }
 
   async deleteCategory(id: string) {

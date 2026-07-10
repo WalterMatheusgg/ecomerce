@@ -10,7 +10,8 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:generate": "prisma generate",
     "test": "vitest run",
-    "test:integration": "vitest run tests/integration"
+    "test:integration": "dotenv -e .env.test -- vitest run tests/integration",
+    "prisma:migrate:test": "dotenv -e .env.test -- npx prisma migrate deploy"
   },
   "dependencies": {
     "@prisma/client": "^5.15.0",
@@ -31,7 +32,8 @@
     "supertest": "^7.0.1",
     "tsx": "^4.19.0",
     "typescript": "^5.6.3",
-    "vitest": "^2.1.8"
+    "vitest": "^2.1.8",
+    "dotenv-cli": "^5.0.0"
   },
   "engines": {
     "node": ">=18"

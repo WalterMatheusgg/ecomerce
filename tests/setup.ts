@@ -1,9 +1,12 @@
 import { beforeAll, afterAll } from 'vitest';
 import dotenv from 'dotenv';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 // Ensure test env is set before any app imports/config loads
 process.env.NODE_ENV = 'test';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 dotenv.config({ path: path.resolve(__dirname, '..', '.env.test') });
 
 beforeAll(() => {
